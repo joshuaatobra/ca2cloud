@@ -10,15 +10,8 @@ steps:
 - task: Docker@2
   inputs:
     containerRegistry: '$(dockerRegistryServiceConnection)' # Set this up below
-    repository: 'flask-docker-app'
+    repository: 'ca2cloud'
     command: 'buildAndPush'
     Dockerfile: '**/Dockerfile'
     tags: 'latest'
 
-# Optional: Push image to a registry if using an external one
-- task: Docker@2
-  inputs:
-    command: 'push'
-    containerRegistry: '$(dockerRegistryServiceConnection)' 
-    repository: 'flask-docker-app'
-    tags: 'latest'
