@@ -1,17 +1,16 @@
 trigger:
   branches:
     include:
-      - main   # or master, depending on your branch
-
+      - main  
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'ubuntu-latest'  
 
 steps:
 - task: Docker@2
+  displayName: 'Build and Push Docker Image'
   inputs:
-    containerRegistry: '$(dockerRegistryServiceConnection)' # Set this up below
-    repository: 'ca2cloud'
-    command: 'buildAndPush'
-    Dockerfile: '**/Dockerfile'
-    tags: 'latest'
-
+    containerRegistry: '$(dockerRegistryServiceConnection)'  
+    repository: 'docker-app'  
+    command: 'buildAndPush'  
+    Dockerfile: 'Dockerfile' 
+    tags: 'latest'  
