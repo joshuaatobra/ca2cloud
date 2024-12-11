@@ -1,5 +1,5 @@
 trigger:
-  - main  # Trigger on changes to the 'main' branch
+  - main  
 
 resources:
   - repo: self  
@@ -21,7 +21,7 @@ stages:
           inputs:
             command: 'build'
             dockerfile: '$(Build.SourcesDirectory)/Dockerfile'  
-            tags: '$(tag)'  
+            tags: '$(tag)'  # Use the Build ID as the tag
 
         - task: Docker@2
           displayName: Push Docker image to Docker Hub
