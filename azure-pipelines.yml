@@ -31,7 +31,7 @@ jobs:
 
       - task: AzureCLI@2
         inputs:
-          azureSubscription: 'AzureServiceConnection'
+          azureSubscription: 'devopstud'
           scriptType: 'bash'
           scriptLocation: 'inlineScript'
           inlineScript: |
