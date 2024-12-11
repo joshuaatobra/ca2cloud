@@ -27,7 +27,7 @@ stages:
           displayName: Push Docker image to Docker Hub
           inputs:
             command: 'push'
-            containerRegistry: 'DockerHubConnection'  
+            containerRegistry: 'TUDProj'  
             repository: 'joshuatud/docker-app'  
             tags: '$(tag)'  
 
