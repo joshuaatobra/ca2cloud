@@ -2,7 +2,7 @@ trigger:
   - main
 
 variables:
-  dockerRegistryServiceConnection: 'DockerHubConnection'
+  dockerRegistryServiceConnection: 'TUDProj'
   imageName: 'joshuatud/docker-app'
 
 jobs:
