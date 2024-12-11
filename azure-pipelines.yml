@@ -1,35 +1,29 @@
 trigger:
-  - main  # Trigger on changes to the 'main' branch
-
-resources:
-  - repo: self  
+  - main
 
 variables:
-  DOCKER_USERNAME: 'joshuatud'  # Your Docker Hub username
-  tag: '$(Build.BuildId)'  # Tag the image with the Build ID
+  dockerRegistryServiceConnection: 'DockerHubConnection'
+  imageName: 'joshuatud/docker-app'
 
-stages:
-  - stage: Build
-    displayName: Build Docker Image
-    jobs:
-      - job: BuildAndPush
-        displayName: Build and Push
-        pool:
-          vmImage: 'ubuntu-latest'  # Use an Ubuntu agent for Docker
-        steps:
-          - task: Docker@2
-            displayName: Build Docker image
-            inputs:
-              command: 'build'
-              dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
-              tags: '$(DOCKER_USERNAME)/docker-app:$(tag)'  # Use the variable
+jobs:
+  - job: BuildAndPush
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+      - task: Docker@2
+        inputs:
+          command: 'build'
+          dockerfile: '**/Dockerfile'
+          containerRegistry: $(dockerRegistryServiceConnection)
+          repository: $(imageName)
+          tags: 'latest'
+      
+      - task: Docker@2
+        inputs:
+          command: 'push'
+          containerRegistry: $(dockerRegistryServiceConnection)
+          repository: $(imageName)
+          tags: 'latest'
 
-          - task: Docker@2
-            displayName: Push Docker image to Docker Hub
-            inputs:
-              command: 'push'
-              containerRegistry: 'TUDProj'  # Your Docker Hub connection name in Azure DevOps
-              repository: '$(DOCKER_USERNAME)/docker-app'
-              tags: '$(tag)'  # Use the variable
 
 
