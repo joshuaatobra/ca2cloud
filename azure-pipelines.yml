@@ -4,9 +4,13 @@ trigger:
 variables:
   dockerRegistryServiceConnection: 'TUDProj'
   imageName: 'joshuatud/docker-app'
+  azureContainerGroup: 'DefaultResourceGroup-SUK'
+  azureRegion: 'UK South'
+  azureResourceGroup: 'devopstud'
+  containerName: 'con-proj'
 
 jobs:
-  - job: BuildAndPush
+  - job: BuildAndDeploy
     pool:
       vmImage: 'ubuntu-latest'
     steps:
@@ -17,13 +21,29 @@ jobs:
           containerRegistry: $(dockerRegistryServiceConnection)
           repository: $(imageName)
           tags: 'latest'
-      
+
       - task: Docker@2
         inputs:
           command: 'push'
           containerRegistry: $(dockerRegistryServiceConnection)
           repository: $(imageName)
           tags: 'latest'
+
+      - task: AzureCLI@2
+        inputs:
+          azureSubscription: 'AzureServiceConnection'
+          scriptType: 'bash'
+          scriptLocation: 'inlineScript'
+          inlineScript: |
+            az container create \
+              --resource-group $(azureResourceGroup) \
+              --name $(containerName) \
+              --image $(imageName):latest \
+              --cpu 1 --memory 1.5 \
+              --registry-login-server https://index.docker.io \
+              --registry-username $(DOCKER_USERNAME) \
+              --registry-password $(DOCKER_PASSWORD)
+
 
 
 
