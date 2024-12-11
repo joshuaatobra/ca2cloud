@@ -40,10 +40,9 @@ jobs:
               --name $(containerName) \
               --image $(imageName):latest \
               --cpu 1 --memory 1.5 \
-              --registry-login-server https://index.docker.io \
-              --registry-username $(DOCKER_USERNAME) \
-              --registry-password $(DOCKER_PASSWORD)
-
+              --os-type Linux \
+              --location $(azureRegion) \
+              --ports 80
 
 
 
