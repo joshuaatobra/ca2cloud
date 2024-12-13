@@ -2,11 +2,15 @@ trigger:
   - main
 
 variables:
-  dockerRegistryServiceConnection: 'TUDProj'
+  dockerRegistryServiceConnection: 'TUDProj'  
   imageName: 'joshuatud/docker-app'
+  azureContainerGroup: 'DefaultResourceGroup-SUK'
+  azureRegion: 'UK South'
+  azureResourceGroup: 'DefaultResourceGroup-SUK'
+  containerName: 'con-proj'
 
 jobs:
-  - job: BuildAndPush
+  - job: BuildAndDeploy
     pool:
       vmImage: 'ubuntu-latest'
     steps:
@@ -17,10 +21,18 @@ jobs:
           containerRegistry: $(dockerRegistryServiceConnection)
           repository: $(imageName)
           tags: 'latest'
-      
-      - task: Docker@2
+
+      - task: AzureCLI@2
         inputs:
-          command: 'push'
-          containerRegistry: $(dockerRegistryServiceConnection)
-          repository: $(imageName)
-          tags: 'latest'
+          azureSubscription: 'devopstud'  # Your Azure Service Connection
+          scriptType: 'bash'
+          scriptLocation: 'inlineScript'
+          inlineScript: |
+            az container create \
+              --resource-group $(azureResourceGroup) \
+              --name $(containerName) \
+              --image $(imageName):latest \
+              --cpu 1 --memory 1.5 \
+              --restart-policy OnFailure \
+              --location $(azureRegion)
+          displayName: 'Deploy to Azure Container Instances (ACI)'
