@@ -8,6 +8,7 @@ variables:
   azureRegion: 'uksouth'
   azureResourceGroup: 'DefaultResourceGroup-SUK'
   containerName: 'con-proj'
+  containerPort: 5000
 
 jobs:
   - job: BuildAndDeploy
@@ -29,10 +30,12 @@ jobs:
           scriptLocation: 'inlineScript'
           inlineScript: |
             az container create \
-              --resource-group $(azureResourceGroup) \
               --name $(containerName) \
-              --image $(imageName):latest \
-              --cpu 1 --memory 1.5 \
-              --restart-policy OnFailure \
+              --resource-group $(azureResourceGroup) \
+              --image $(imageName):$(Build.BuildId) \
+              --cpu 1 \
+              --memory 1.5 \
+              --ports $(containerPort) \
+              --dns-name-label $(containerName)-$(Build.BuildId) \
               --location $(azureRegion)
           displayName: 'Deploy to Azure Container Instances (ACI)'
