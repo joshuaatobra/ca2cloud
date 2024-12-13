@@ -5,7 +5,7 @@ variables:
   dockerRegistryServiceConnection: 'TUDProj'  
   imageName: 'joshuatud/docker-app'
   azureContainerGroup: 'DefaultResourceGroup-SUK'
-  azureRegion: 'UK South'
+  azureRegion: 'uksouth'
   azureResourceGroup: 'DefaultResourceGroup-SUK'
   containerName: 'con-proj'
 
