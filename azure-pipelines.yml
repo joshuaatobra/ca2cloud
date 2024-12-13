@@ -2,11 +2,11 @@ trigger:
   - main
 
 variables:
-  dockerRegistryServiceConnection: 'TUDProj'
+  dockerRegistryServiceConnection: 'TUDProj'  
   imageName: 'joshuatud/docker-app'
-  azureContainerGroup: 'DefaultResourceGroup-SUK'
+  azureContainerGroup: 'DefaultResourceGroup-SUK'  
   azureRegion: 'UK South'
-  azureResourceGroup: 'devopstud'
+  azureResourceGroup: 'DefaultResourceGroup-SUK' 
   containerName: 'con-proj'
 
 jobs:
@@ -16,22 +16,13 @@ jobs:
     steps:
       - task: Docker@2
         inputs:
-          command: 'build'
-          dockerfile: '**/Dockerfile'
-          containerRegistry: $(dockerRegistryServiceConnection)
+          command: 'buildAndPush'
+          dockerRegistryServiceConnection: $(dockerRegistryServiceConnection)
           repository: $(imageName)
           tags: 'latest'
-
-      - task: Docker@2
-        inputs:
-          command: 'push'
-          containerRegistry: $(dockerRegistryServiceConnection)
-          repository: $(imageName)
-          tags: 'latest'
-
       - task: AzureCLI@2
         inputs:
-          azureSubscription: 'devopstud'
+          azureSubscription: 'devopstud' 
           scriptType: 'bash'
           scriptLocation: 'inlineScript'
           inlineScript: |
@@ -39,10 +30,9 @@ jobs:
               --resource-group $(azureResourceGroup) \
               --name $(containerName) \
               --image $(imageName):latest \
-              --cpu 1 --memory 1.5 \
-              --os-type Linux \
-              --location $(azureRegion) \
-              --ports 80
-
-
-
+              --cpu 1 --memory 1.5Gi \
+              --registry-login-server docker.io \
+              --registry-username $(DOCKER_USERNAME) \
+              --registry-password $(DOCKER_PASSWORD) \
+              --os-type Linux
+          displayName: 'Deploy Docker image to Azure Container Instance one'
