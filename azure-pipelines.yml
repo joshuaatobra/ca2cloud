@@ -34,4 +34,17 @@ jobs:
       - task: AzureCLI@2
         displayName: 'Deploy to Azure Container Instances (ACI)'
         inputs:
-        
+          azureSubscription: 'devopstud'
+          scriptType: 'bash'
+          scriptLocation: 'inlineScript'
+          inlineScript: |
+            az container create \
+              --name $(containerName) \
+              --resource-group $(azureResourceGroup) \
+              --image $(imageName):latest \
+              --cpu 1 \
+              --memory 1.5 \
+              --ports $(containerPort) \
+              --dns-name-label $(containerName)-$(Build.BuildId) \
+              --location $(azureRegion)
+
