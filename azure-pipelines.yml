@@ -2,11 +2,10 @@ trigger:
   - main
 
 variables:
-  dockerRegistryServiceConnection: 'TUDProj'  
+  dockerRegistryServiceConnection: 'TUDProj'
   imageName: 'joshuatud/docker-app'
-  azureContainerGroup: 'DefaultResourceGroup-SUK'
-  azureRegion: 'uksouth'
   azureResourceGroup: 'DefaultResourceGroup-SUK'
+  azureRegion: 'uksouth'
   containerName: 'con-proj'
   containerPort: 5000
 
@@ -16,6 +15,7 @@ jobs:
       vmImage: 'ubuntu-latest'
     steps:
       - task: Docker@2
+        displayName: 'Build Docker Image'
         inputs:
           command: 'build'
           dockerfile: '**/Dockerfile'
@@ -23,19 +23,15 @@ jobs:
           repository: $(imageName)
           tags: 'latest'
 
-      - task: AzureCLI@2
+      - task: Docker@2
+        displayName: 'Push Docker Image to ACR'
         inputs:
-          azureSubscription: 'devopstud'  # Your Azure Service Connection
-          scriptType: 'bash'
-          scriptLocation: 'inlineScript'
-          inlineScript: |
-            az container create \
-              --name $(containerName) \
-              --resource-group $(azureResourceGroup) \
-              --image $(imageName):$(Build.BuildId) \
-              --cpu 1 \
-              --memory 1.5 \
-              --ports $(containerPort) \
-              --dns-name-label $(containerName)-$(Build.BuildId) \
-              --location $(azureRegion)
-          displayName: 'Deploy to Azure Container Instances (ACI)'
+          command: 'push'
+          containerRegistry: $(dockerRegistryServiceConnection)
+          repository: $(imageName)
+          tags: 'latest'
+
+      - task: AzureCLI@2
+        displayName: 'Deploy to Azure Container Instances (ACI)'
+        inputs:
+        
