@@ -46,5 +46,6 @@ jobs:
               --memory 1.5 \
               --ports $(containerPort) \
               --dns-name-label $(containerName)-$(Build.BuildId) \
-              --location $(azureRegion)
+              --location $(azureRegion) \
+              --environment-variables ApiKey=$(ApiKey)
 
