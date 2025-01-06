@@ -6,7 +6,7 @@ variables:
   imageName: 'joshuatud/docker-app'
   azureResourceGroup: 'DefaultResourceGroup-SUK'
   azureRegion: 'uksouth'
-  containerName: 'con-proj'
+  containerName: 'con-proj-new'
   containerPort: 5000
 
 jobs:
